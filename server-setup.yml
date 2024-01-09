@@ -14,5 +14,10 @@
     become_method: sudo
   - name: Upgrade all pacman packages
     pacman:
-      
+      name:
+        - btop
+        - flatpak
+        - opendoas
+        - ranger
+        - tmux
     become: yes
