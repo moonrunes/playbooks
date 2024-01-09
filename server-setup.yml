@@ -1,0 +1,18 @@
+---
+- name: Build Arch Server
+  hosts: server
+  tasks:
+  - name: Copy SSH configs
+    ansible.builtin.copy:
+      src: ./hosts
+      dest: /tmp/hosts_backup
+      mode: '0644'
+  - name: Add the user 'nick'
+    ansible.builtin.user:
+      name: nick
+    become: yes
+    become_method: sudo
+  - name: Upgrade all pacman packages
+    pacman:
+      
+    become: yes
