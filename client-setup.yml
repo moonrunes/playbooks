@@ -1,0 +1,29 @@
+---
+- name: Intro to Ansible Playbooks
+  hosts: all
+  tasks:
+  - name: Copy SSH configs
+    ansible.builtin.copy:
+      src: ./hosts
+      dest: /tmp/hosts_backup
+      mode: '0644'
+  - name: Add the user 'nick'
+    ansible.builtin.user:
+      name: nick
+    become: yes
+    become_method: sudo
+  - name: Upgrade all apt packages
+    apt:
+      force_apt_get: yes
+      upgrade: dist
+    become: yes
+  - name: Program install
+    become: yes
+    tasks:
+      - name: Install client Programs
+        pacman:
+          name:
+            - btop
+            - flatpak
+            - ranger
+            - tmux
