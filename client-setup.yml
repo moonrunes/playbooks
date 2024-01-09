@@ -25,5 +25,6 @@
           name:
             - btop
             - flatpak
+            - opendoas
             - ranger
             - tmux
