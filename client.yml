@@ -1,0 +1,11 @@
+---
+  - name: Arch Client
+    become: yes
+    tasks:
+      - name: Install client Programs
+        pacman:
+          name:
+            - btop
+            - flatpak
+            - ranger
+            - tmux
