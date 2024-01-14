@@ -1,3 +1,10 @@
+x-env: &env
+  environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
+  restart: unless-stopped
+
 volumes:
   nextcloud:
   db:
@@ -9,9 +16,8 @@ services:
     command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
     volumes:
       - /srv/mariadb:/var/lib/mysql
+    <<: *env
     environment:
-      - PUID=1000
-      - PGID=1000
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql_root_password
       - MYSQL_PASSWORD_FILE=/run/secrets/mysql_password
       - MYSQL_DATABASE_FILE=/run/secrets/mysql_database
@@ -21,7 +27,10 @@ services:
       - mysql_password
       - mysql_database
       - mysql_user
-    restart: unless-stopped
+#    deploy:
+#      resources:
+#        limits:
+#          memory: 1G
 
   app:
     image: nextcloud
@@ -32,9 +41,8 @@ services:
       - db
     volumes:
       - /srv/nextcloud:/var/www/html
+    <<: *env
     environment:
-      - PUID=1000
-      - PGID=1000
       - MYSQL_PASSWORD_FILE=/run/secrets/mysql_password
       - MYSQL_DATABASE_FILE=/run/secrets/mysql_database
       - MYSQL_USER_FILE=/run/secrets/mysql_user
@@ -44,7 +52,10 @@ services:
       - mysql_database
       - mysql_user
       - mysql_host
-    restart: unless-stopped
+#    deploy:
+#      resources:
+#        limits:
+#          memory: 1G
 
   jellyfin:
     image: jellyfin/jellyfin:latest
@@ -60,15 +71,13 @@ services:
       - /mnt/storage:/media
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
+    <<: *env
     environment:
       - ROC_ENABLE_PRE_VEGA=1
-      - PUID=1000
-      - PGID=1000
     deploy:
       resources:
         limits:
           memory: 1G
-    restart: unless-stopped
 
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:stable
@@ -78,16 +87,12 @@ services:
     volumes:
       - /srv/homeassistant/config:/config
       - /etc/localtime:/etc/localtime:ro
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Chicago
+    <<: *env
     privileged: true
     deploy:
       resources:
         limits:
           memory: 1G
-    restart: unless-stopped
 
   papermc:
     image: marctv/minecraft-papermc-server:latest
@@ -96,22 +101,15 @@ services:
       - 25565:25565
     volumes:
       - /srv/papermc/data:/data
-    environment:
-      - PUID=1000
-      - PGID=1000
+    <<: *env
     deploy:
       resources:
         limits:
           memory: 9.5G
-    restart: unless-stopped
 
   syncthing:
     image: lscr.io/linuxserver/syncthing:latest
     container_name: syncthing
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Chicago
     volumes:
       - /srv/syncthing/config:/config
       - /mnt/storage:/mnt/storage
@@ -120,11 +118,11 @@ services:
       - 22000:22000/tcp
       - 22000:22000/udp
       - 21027:21027/udp
+    <<: *env
     deploy:
       resources:
         limits:
           memory: 500M
-    restart: unless-stopped
 
   vaultwarden:
     image: vaultwarden/server:latest
@@ -133,22 +131,19 @@ services:
       - 80:80
     volumes:
       - /srv/vw-data:/data
-    environment:
-      - PUID=1000
-      - PGID=1000
+    <<: *env
     deploy:
       resources:
         limits:
           memory: 500M
-    restart: unless-stopped
 
   watchtower:
     image: containrrr/watchtower
     container_name: watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    <<: *env
     deploy:
       resources:
         limits:
           memory: 50M
-    restart: unless-stopped
