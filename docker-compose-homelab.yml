@@ -42,12 +42,11 @@ services:
       - MYSQL_PASSWORD_FILE=/run/secrets/mysql_password
       - MYSQL_DATABASE_FILE=/run/secrets/mysql_database
       - MYSQL_USER_FILE=/run/secrets/mysql_user
-      - MYSQL_HOST_FILE=/run/secrets/mysql_host
+      - MYSQL_HOST=db
     secrets:
       - mysql_password
       - mysql_database
       - mysql_user
-      - mysql_host
 #    deploy:
 #      resources:
 #        limits:
@@ -146,3 +145,13 @@ services:
 volumes:
   nextcloud:
   db:
+
+secrets:
+  mysql_root_password:
+    file: ./mysql_root_password.txt
+  mysql_password:
+    file: ./mysql_password.txt
+  mysql_database:
+    file: ./mysql_database.txt
+  mysql_user:
+    file: ./mysql_user.txt
