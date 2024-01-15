@@ -32,6 +32,7 @@ services:
       - 8080:80
     volumes:
       - /srv/nextcloud:/var/www/html
+      - /mnt/storage:/mnt/storage
     <<: *env
     environment:
       - POSTGRES_HOST=db
