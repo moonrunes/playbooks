@@ -2,18 +2,6 @@
 - name: Build Arch Server
   hosts: server
   tasks:
-  - name: install programs via pacman
-    pacman:
-      name:
-        - btop
-        - docker
-        - docker-compose
-        - flatpak
-        - opendoas
-        - ranger
-        - tmux
-      state: present
-
   - name: create group for ssh users
     group:
       name: sshusers
@@ -21,25 +9,51 @@
   - name: create new user with password, add to groups
       user:
         name: nick
-        password: "{{ user_pw | password_hash('sha512')}}"
-        groups: sshusers
+        groups: "sshusers, wheel"
         shell: /bin/bash
-
-  - name: limit doas to nick
-    lineinfile:
-      path: /etc/doas.conf
-      line: permit persist nick
     
   - name: add authorized keys for new user
     authorized_key:
       user: nick
       key: "/home/nick/.ssh/id_ed25519.pub"
-
+      
   - name: update and upgrade
     become: true
     pacman:
       update_cache: yes
       upgrade: yes
+      
+  - name: install programs via pacman
+    become: true
+    pacman:
+      name:
+        - audit
+        - btop
+        - docker
+        - docker-compose
+        - firewalld
+        - nano
+        - ntp
+        - opendoas
+        - parted
+        - ranger
+        - rsync
+        - tailscale
+        - tmux
+      state: present
+
+  - name: set doas to nick
+    become: true
+    lineinfile:
+      path: /etc/doas.conf
+      line: permit persist nick
+  
+  - name: remove unnecessary programs via pacman
+    become: true
+    pacman:
+      name:
+        - sudo
+    state: absent
 
   - name: secure ssh configuration 
     become: true
@@ -104,7 +118,7 @@
         - { regexp: '^Port', line: 'Port 22'}
         - { regexp: '^PermitRootLogin', line: 'PermitRootLogin no'}
         - { regexp: '^X11Forwarding', line: 'X11Forwarding no'}
-        - { regexp: '^Subsystem', line: 'Subsystem sftp  internal-sftp -f AUTHPRIV -l INFO'}
+        - { regexp: '^Subsystem', line: 'Subsystem sftp  /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO'}
       notify: restart ssh service
 
     - name: remove short diffie diffie-hellman
