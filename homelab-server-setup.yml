@@ -244,6 +244,13 @@
       mode: '0660'
       force: true
 
+  - name: Download ssh client config
+    ansible.builtin.get_url:
+      url: https://raw.githubusercontent.com/moonrunes/dotfiles/main/config
+      dest: /home/nick/.ssh
+      mode: '0660'
+      force: true
+
   - name: Remove unnecessary programs via pacman
     become: true
     become_method: doas
