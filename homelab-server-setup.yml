@@ -1,5 +1,6 @@
 ---
-- hosts: server
+- name: Build Arch server
+  hosts: server
   tasks:
   - name: Create group for ssh users
     ansible.builtin.group:
@@ -18,7 +19,7 @@
 
   - name: Update and upgrade
     become: true
-    pacman:
+    community.general.pacman:
       update_cache: true
       upgrade: true
 
