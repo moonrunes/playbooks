@@ -224,10 +224,7 @@
 
   - name: Download dotfiles
     ansible.builtin.get_url:
-      url: 
-        - https://raw.githubusercontent.com/moonrunes/dotfiles/main/.bash_aliases
-        - https://raw.githubusercontent.com/moonrunes/dotfiles/main/.bashrc
-        - https://raw.githubusercontent.com/moonrunes/dotfiles/main/.tmux.conf
+      url: https://raw.githubusercontent.com/moonrunes/dotfiles/main/.tmux.conf
       dest: /home/nick/
       mode: '0660'
       force: true
