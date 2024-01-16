@@ -230,6 +230,7 @@
         - https://raw.githubusercontent.com/moonrunes/dotfiles/.tmux.conf
       dest: /home/nick/
       mode: '0660'
+      force: true
 
   - name: Remove unnecessary programs via pacman
     become: true
