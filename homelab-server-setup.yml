@@ -29,6 +29,7 @@
       name:
         - audit
         - btop
+        - clamav
         - docker
         - docker-compose
         - firewalld
@@ -37,6 +38,7 @@
         - opendoas
         - parted
         - ranger
+        - rkhunter
         - rsync
         - tailscale
         - tmux
@@ -175,3 +177,11 @@
     shell: |
       rkhunter --update
       rkhunter --propupd
+  
+  - name: add crontab to run clamav daily at 3 AM
+      become: true
+      cron:
+        name: clamav daily run
+        minute: "0"
+        hour: "3"
+        job: "/usr/bin/clamscan -ri --exclude-dir=\"^/sys\" --no-summary /"
