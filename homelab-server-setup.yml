@@ -2,30 +2,30 @@
 - name: Build Arch Server
   hosts: server
   tasks:
-  - name: create group for ssh users
-    group:
+  - name: Create group for ssh users
+    ansible.builtin.group:
       name: sshusers
 
-  - name: create new user with password, add to groups
-    user:
+  - name: Create new user with password, add to groups
+    ansible.builtin.user:
       name: nick
       groups: "sshusers, wheel"
       shell: /bin/bash
-    
-  - name: add authorized keys for new user
-    authorized_key:
+
+  - name: Add authorized keys for new user
+    ansible.posix.authorized_key:
       user: nick
       key: "/home/nick/.ssh/id_ed25519.pub"
-      
-  - name: update and upgrade
+
+  - name: Update and upgrade
     become: true
     pacman:
-      update_cache: yes
-      upgrade: yes
-      
-  - name: install programs via pacman
+      update_cache: true
+      upgrade: true
+
+  - name: Install programs via pacman
     become: true
-    pacman:
+    community.general.pacman:
       name:
         - audit
         - btop
@@ -46,26 +46,28 @@
         - tmux
       state: present
 
-  - name: set doas to nick
+  - name: Set doas permission to nick
     become: true
-    lineinfile:
+    ansible.builtin.lineinfile:
       path: /etc/doas.conf
       line: permit persist nick
-  
-  - name: remove unnecessary programs via pacman
+
+  - name: Remove unnecessary programs via pacman
     become: true
-    pacman:
+    community.general.pacman:
       name:
         - sudo
       state: absent
 
-  - name: lock root account
+  - name: Lock root account
     become: true
-    shell: passwd -l root
+    ansible.builtin.user:
+      name: root
+      password_lock: true
 
-  - name: secure ssh configuration 
+  - name: Secure SSH configuration 
     become: true
-    blockinfile:
+    ansible.builtin.blockinfile:
       path: /etc/ssh/sshd_config
       block: |
         ########################################################################################################
@@ -107,9 +109,9 @@
         HostbasedAuthentication no
       notify: restart ssh service
 
-  - name: secure ssh configuration part 2
+  - name: Secure ssh configuration part 2
     become: true
-    lineinfile:
+    ansible.builtin.lineinfile:
       dest: /etc/ssh/sshd_config
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
@@ -129,27 +131,27 @@
       - { regexp: '^Subsystem', line: 'Subsystem sftp  /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO'}
     notify: restart ssh service
 
-  - name: remove short diffie diffie-hellman
+  - name: Remove short diffie diffie-hellman
     become: true
-    shell: |
+    ansible.builtin.shell: |
       awk '$5 >= 3071' /etc/ssh/moduli | sudo tee /etc/ssh/moduli.tmp
       mv /etc/ssh/moduli.tmp /etc/ssh/moduli
     notify: restart ssh service
 
-  - name: move default auditd rules and download best practice rules
+  - name: Move default auditd rules and download best practice rules
     become: true
-    shell: |
+    ansible.builtin.shell: |
       cp /etc/audit/rules.d/audit.rules /etc/audit/rules.d/audit.rules.old
       wget -P /etc/audit/rules.d/ https://raw.githubusercontent.com/Neo23x0/auditd/master/audit.rules
       service auditd restart
 
-  - name: copy rkhunter's default config file
+  - name: Copy rkhunter default config file
     become: true
-    shell: cp -p /etc/rkhunter.conf /etc/rkhunter.conf.local
+    ansible.builtin.shell: cp -p /etc/rkhunter.conf /etc/rkhunter.conf.local
 
-  - name: configure rkhunter
+  - name: Configure rkhunter
     become: true
-    lineinfile:
+    ansible.builtin.lineinfile:
       dest: /etc/rkhunter.conf.local
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
@@ -163,9 +165,9 @@
       - { regexp: '^USE_LOCKING', line: 'USE_LOCKING=1'}
       - { regexp: '^SHOW_SUMMARY_WARNINGS_NUMBER', line: 'SHOW_SUMMARY_WARNINGS_NUMBER=1'}
 
-  - name: configure rkhunter pt. 2
+  - name: Configure rkhunter pt. 2
     become: true
-    lineinfile:
+    ansible.builtin.lineinfile:
       dest: /etc/default/rkhunter
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
@@ -178,22 +180,29 @@
       - { regexp: '^NICE', line: 'NICE="0"' }
       - { regexp: '^RUN_CHECK_ON_BATTERY', line: 'RUN_CHECK_ON_BATTERY="false"' }
 
-  - name: update rkhunter
+  - name: Update rkhunter
     become: true
-    shell: |
+    ansible.builtin.shell: |
       rkhunter --update
       rkhunter --propupd
-  
-  - name: add crontab to run clamav daily at 3 AM
+
+  - name: Add crontab to run clamav daily at 3 AM
     become: true
-    cron:
+    ansible.builtin.cron:
       name: clamav daily run
       minute: "0"
       hour: "3"
       job: "/usr/bin/clamscan -ri --exclude-dir=\"^/sys\" --no-summary /"
 
-  - name: update and run first lynis audit
+  - name: Update and run first lynis audit
     become: true
-    shell: |
+    ansible.builtin.shell: |
       lynis update info
       lynis audit system | ansi2html -l > /tmp/lynis-report.html
+
+handlers:
+  - name: Restart ssh service
+    service:
+      name: sshd
+      state: restarted
+    
