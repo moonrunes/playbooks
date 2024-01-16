@@ -57,7 +57,7 @@
     pacman:
       name:
         - sudo
-    state: absent
+      state: absent
 
   - name: lock root account
     become: true
