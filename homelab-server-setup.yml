@@ -51,8 +51,12 @@
   - name: Set doas permission to nick
     become: true
     ansible.builtin.lineinfile:
+      create: true
       path: /etc/doas.conf
       line: permit persist nick
+      owner: root
+      group: root
+      mode: 660
 
   - name: Remove unnecessary programs via pacman
     become: true
