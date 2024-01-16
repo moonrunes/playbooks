@@ -33,6 +33,7 @@
         - docker
         - docker-compose
         - firewalld
+        - lynis
         - nano
         - ntp
         - opendoas
@@ -56,6 +57,10 @@
       name:
         - sudo
     state: absent
+
+  - name: lock root account
+    become: true
+      shell: passwd -l root
 
   - name: secure ssh configuration 
     become: true
@@ -130,10 +135,10 @@
       mv /etc/ssh/moduli.tmp /etc/ssh/moduli
     notify: restart ssh service
 
-  - name: remove default auditd rules and download best practice rules
+  - name: move default auditd rules and download best practice rules
     become: true
     shell: |
-      rm /etc/audit/rules.d/audit.rules
+      cp /etc/audit/rules.d/audit.rules /etc/audit/rules.d/audit.rules.old
       wget -P /etc/audit/rules.d/ https://raw.githubusercontent.com/Neo23x0/auditd/master/audit.rules
       service auditd restart
 
@@ -185,3 +190,9 @@
         minute: "0"
         hour: "3"
         job: "/usr/bin/clamscan -ri --exclude-dir=\"^/sys\" --no-summary /"
+
+  - name: update and run first lynis audit
+    become: true
+    shell: |
+      lynis update info
+      lynis audit system | ansi2html -l > /tmp/lynis-report.html
