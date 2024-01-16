@@ -130,7 +130,6 @@
       - { regexp: '^PermitRootLogin', line: 'PermitRootLogin no'}
       - { regexp: '^X11Forwarding', line: 'X11Forwarding no'}
       - { regexp: '^Subsystem', line: 'Subsystem sftp  /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO'}
-    notify: Restart ssh service
 
   - name: Remove short diffie diffie-hellman
     become: true
@@ -138,7 +137,14 @@
     ansible.builtin.shell: |
       awk '$5 >= 3071' /etc/ssh/moduli | sudo tee /etc/ssh/moduli.tmp
       mv /etc/ssh/moduli.tmp /etc/ssh/moduli
-    notify: Restart sshd
+
+  - name: Restart sshd
+    become: true
+    become_method: doas
+    ansible.builtin.service:
+      name: sshd
+      state: restarted
+      enabled: true
 
   - name: Download auditd best practice rules
     become: true
@@ -148,7 +154,14 @@
       dest: /etc/audit/rules.d/
       mode: '0440'
       backup: true
-    notify: Restart auditd
+
+  - name: Restart auditd
+    become: true
+    become_method: doas
+    ansible.builtin.service:
+      name: auditd
+      state: restarted
+      enabled: true
 
   - name: Copy rkhunter default config file
     become: true
@@ -229,18 +242,3 @@
         - sudo
       state: absent
       force: true
-
-- handlers:
-  - name: Restart sshd
-    become: true
-    become_method: doas
-    service:
-      name: ssh
-      state: restarted
-
-  - name: Restart auditd
-    become: true
-    become_method: doas
-    service:
-      name: auditd
-      state: restarted
