@@ -37,6 +37,7 @@
         - firewalld
         - lynis
         - nano
+        - neofetch
         - ntp
         - opendoas
         - parted
@@ -222,7 +223,21 @@
       lynis update info
       lynis audit system > /tmp/lynis-report
 
-  - name: Download dotfiles
+  - name: Download bash_aliases
+    ansible.builtin.get_url:
+      url: https://raw.githubusercontent.com/moonrunes/dotfiles/main/.bash_aliases
+      dest: /home/nick/
+      mode: '0660'
+      force: true
+
+  - name: Download bashrc
+    ansible.builtin.get_url:
+      url: https://raw.githubusercontent.com/moonrunes/dotfiles/main/.bashrc
+      dest: /home/nick/
+      mode: '0660'
+      force: true
+
+  - name: Download tmux.conf
     ansible.builtin.get_url:
       url: https://raw.githubusercontent.com/moonrunes/dotfiles/main/.tmux.conf
       dest: /home/nick/
