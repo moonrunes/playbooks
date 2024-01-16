@@ -1,1 +1,1 @@
-Ansible Playbooks for quick deployment of standard clients and servers
+Ansible Playbooks and Docker Compose files for quick deployment of clients and servers
