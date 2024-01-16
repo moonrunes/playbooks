@@ -56,7 +56,7 @@
       line: permit persist nick
       owner: root
       group: root
-      mode: 640
+      mode: '0440'
 
   - name: Lock root account
     become: true
@@ -138,19 +138,23 @@
     ansible.builtin.shell: |
       awk '$5 >= 3071' /etc/ssh/moduli | sudo tee /etc/ssh/moduli.tmp
       mv /etc/ssh/moduli.tmp /etc/ssh/moduli
-    notify: Restart ssh service
+    notify: Restart sshd
 
-  - name: Move default auditd rules and download best practice rules
+  - name: Download auditd best practice rules
     become: true
     become_method: doas
-    ansible.builtin.shell: |
-      cp /etc/audit/rules.d/audit.rules /etc/audit/rules.d/audit.rules.old
-      wget -P /etc/audit/rules.d/ https://raw.githubusercontent.com/Neo23x0/auditd/master/audit.rules
-      service auditd restart
+    ansible.builtin.get_url:
+      url: https://raw.githubusercontent.com/Neo23x0/auditd/master/audit.rules
+      dest: /etc/audit/rules.d/
+      mode: '0440'
+      backup: true
+    notify: Restart auditd
 
   - name: Copy rkhunter default config file
     become: true
-    ansible.builtin.shell: cp -p /etc/rkhunter.conf /etc/rkhunter.conf.local
+    ansible.builtin.copy: 
+      src: /etc/rkhunter.conf 
+      dest: /etc/rkhunter.conf.local
 
   - name: Configure rkhunter
     become: true
@@ -209,10 +213,13 @@
       lynis audit system | ansi2html -l > /tmp/lynis-report.html
 
   - name: Download dotfiles
-    ansible.builtin.shell: |
-      wget -P /home/nick/ https://raw.githubusercontent.com/moonrunes/dotfiles/.bash_aliases
-      wget -P /home/nick/ https://raw.githubusercontent.com/moonrunes/dotfiles/.bashrc
-      wget -P /home/nick/ https://raw.githubusercontent.com/moonrunes/dotfiles/.tmux.conf
+    ansible.builtin.get_url:
+      url: 
+        - https://raw.githubusercontent.com/moonrunes/dotfiles/.bash_aliases
+        - https://raw.githubusercontent.com/moonrunes/dotfiles/.bashrc
+        - https://raw.githubusercontent.com/moonrunes/dotfiles/.tmux.conf
+      dest: /home/nick/
+      mode: '0660'
 
   - name: Remove unnecessary programs via pacman
     become: true
@@ -221,11 +228,19 @@
       name:
         - sudo
       state: absent
+      force: true
 
 - handlers:
-  - name: Restart ssh service
+  - name: Restart sshd
     become: true
     become_method: doas
     service:
       name: ssh
+      state: restarted
+
+  - name: Restart auditd
+    become: true
+    become_method: doas
+    service:
+      name: auditd
       state: restarted
