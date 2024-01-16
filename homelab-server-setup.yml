@@ -1,4 +1,3 @@
----
 - name: Build Arch Server
   hosts: server
   tasks:
