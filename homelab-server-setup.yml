@@ -88,6 +88,7 @@
 
   - name: Remove unnecessary programs via pacman
     become: true
+    become_method: doas
     community.general.pacman:
       name:
         - sudo
@@ -175,8 +176,9 @@
       rkhunter --update
       rkhunter --propupd
 
-/  - name: Update and run first lynis audit
+  - name: Update and run first lynis audit
     become: true
+    become_method: doas
     ansible.builtin.shell: lynis update info
 
   - name: Download tmux.conf
