@@ -130,7 +130,7 @@
       - { regexp: '^PermitRootLogin', line: 'PermitRootLogin no'}
       - { regexp: '^X11Forwarding', line: 'X11Forwarding no'}
       - { regexp: '^Subsystem', line: 'Subsystem sftp  /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO'}
-    notify: restart ssh service
+    notify: Restart ssh service
 
   - name: Remove short diffie diffie-hellman
     become: true
