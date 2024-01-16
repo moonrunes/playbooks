@@ -106,9 +106,7 @@
   - name: Remove short diffie diffie-hellman
     become: true
     become_method: doas
-    ansible.builtin.shell: |
-      awk '$5 >= 3071' /etc/ssh/moduli | sudo tee /etc/ssh/moduli.tmp
-      mv /etc/ssh/moduli.tmp /etc/ssh/moduli
+    ansible.builtin.shell: awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.tmp && mv /etc/ssh/moduli.tmp /etc/ssh/moduli
 
   - name: Restart sshd
     become: true
