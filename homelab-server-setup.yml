@@ -163,16 +163,11 @@
       state: restarted
       enabled: true
 
-  - name: Copy rkhunter default config file
-    become: true
-    ansible.builtin.copy: 
-      src: /etc/rkhunter.conf 
-      dest: /etc/rkhunter.conf.local
-
   - name: Configure rkhunter
     become: true
     become_method: doas
     ansible.builtin.lineinfile:
+      create: true
       dest: /etc/rkhunter.conf.local
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
@@ -190,6 +185,7 @@
     become: true
     become_method: doas
     ansible.builtin.lineinfile:
+      create: true
       dest: /etc/default/rkhunter
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
