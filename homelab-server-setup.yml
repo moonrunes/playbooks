@@ -204,14 +204,16 @@
       rkhunter --update
       rkhunter --propupd
 
-  - name: Add crontab to run clamav daily at 3 AM
-    become: true
-    become_method: doas
-    ansible.builtin.cron:
-      name: clamav daily run
-      minute: "0"
-      hour: "3"
-      job: "/usr/bin/clamscan -ri --exclude-dir=\"^/sys\" --no-summary /"
+#  - name: Add timer to run clamav daily at 3 AM
+#    become: true
+#    become_method: doas
+#    ansible.builtin.systemd:
+#      name: clamav.timer
+#      enabled: true
+#      state: started
+#      minute: "0"
+#      hour: "3"
+#      job: "/usr/bin/clamscan -ri --exclude-dir=\"^/sys\" --no-summary /"
 
   - name: Update and run first lynis audit
     become: true
