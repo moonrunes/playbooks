@@ -138,7 +138,7 @@
     ansible.builtin.shell: |
       awk '$5 >= 3071' /etc/ssh/moduli | sudo tee /etc/ssh/moduli.tmp
       mv /etc/ssh/moduli.tmp /etc/ssh/moduli
-    notify: restart ssh service
+    notify: Restart ssh service
 
   - name: Move default auditd rules and download best practice rules
     become: true
