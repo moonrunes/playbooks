@@ -38,6 +38,7 @@
         - docker
         - docker-compose
         - firewalld
+        - git
         - lynis
         - nano
         - neofetch
