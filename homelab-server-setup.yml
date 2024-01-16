@@ -3,10 +3,12 @@
   hosts: server
   tasks:
   - name: Create group for ssh users
+    become: true
     ansible.builtin.group:
       name: sshusers
 
   - name: Create new user with password, add to groups
+    become: true
     ansible.builtin.user:
       name: nick
       groups: "sshusers, wheel"
