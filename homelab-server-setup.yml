@@ -58,14 +58,6 @@
       group: root
       mode: 640
 
-  - name: Remove unnecessary programs via pacman
-    become: true
-    become_method: doas
-    community.general.pacman:
-      name:
-        - sudo
-      state: absent
-
   - name: Lock root account
     become: true
     become_method: doas
@@ -116,7 +108,6 @@
         AllowAgentForwarding no
         # don't allow .rhosts or /etc/hosts.equiv
         HostbasedAuthentication no
-      notify: restart ssh service
 
   - name: Secure ssh configuration part 2
     become: true
@@ -222,6 +213,14 @@
       wget -P /home/nick/ https://raw.githubusercontent.com/moonrunes/dotfiles/.bash_aliases
       wget -P /home/nick/ https://raw.githubusercontent.com/moonrunes/dotfiles/.bashrc
       wget -P /home/nick/ https://raw.githubusercontent.com/moonrunes/dotfiles/.tmux.conf
+
+  - name: Remove unnecessary programs via pacman
+    become: true
+    become_method: doas
+    community.general.pacman:
+      name:
+        - sudo
+      state: absent
 
 - handlers:
   - name: Restart ssh service
