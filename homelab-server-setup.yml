@@ -1,23 +1,26 @@
 ---
 - name: Build Arch server
-  hosts: server
+  hosts: archserver
   tasks:
   - name: Create group for ssh users
     become: true
     ansible.builtin.group:
       name: sshusers
 
-  - name: Create new user with password, add to groups
+  - name: Add nick to groups
     become: true
     ansible.builtin.user:
       name: nick
       groups: "sshusers, wheel"
       shell: /bin/bash
 
-  - name: Add authorized keys for new user
-    ansible.posix.authorized_key:
-      user: nick
-      key: "{{ lookup('file', '/home/nick/.ssh/id_ed25519.pub') }}"
+  - name: Add authorized keys file
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/authorized_keys
+      dest: /home/nick/.ssh/
+      mode: '0660'
+      force: true
 
   - name: Update and upgrade
     become: true
@@ -49,7 +52,7 @@
         - tmux
       state: present
 
-  - name: Set doas permission to nick
+  - name: Set doas permission for nick
     become: true
     ansible.builtin.lineinfile:
       create: true
@@ -59,6 +62,22 @@
       group: root
       mode: '0440'
 
+  - name: Download bash_aliases
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/.bash_aliases
+      dest: /home/nick/
+      mode: '0660'
+      force: true
+
+  - name: Download bashrc
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/.bashrc
+      dest: /home/nick/
+      mode: '0660'
+      force: true
+
   - name: Lock root account
     become: true
     become_method: doas
@@ -66,71 +85,23 @@
       name: root
       password_lock: true
 
+  - name: Remove unnecessary programs via pacman
+    become: true
+    community.general.pacman:
+      name:
+        - sudo
+      state: absent
+      force: true
+
   - name: Secure SSH configuration 
     become: true
     become_method: doas
-    ansible.builtin.blockinfile:
-      path: /etc/ssh/sshd_config
-      block: |
-        ########################################################################################################
-        # start settings from https://infosec.mozilla.org/guidelines/openssh#modern-openssh-67 as of 2019-01-01
-        ########################################################################################################
-        # Supported HostKey algorithms by order of preference.
-        HostKey /etc/ssh/ssh_host_ed25519_key
-        KexAlgorithms curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
-        Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
-        MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com
-        # LogLevel VERBOSE logs user's key fingerprint on login. Needed to have a clear audit track of which key was using to log in.
-        LogLevel VERBOSE
-        # Use kernel sandbox mechanisms where possible in unprivileged processes
-        # Systrace on OpenBSD, Seccomp on Linux, seatbelt on MacOSX/Darwin, rlimit elsewhere.
-        # Note: This setting is deprecated in OpenSSH 7.5 (https://www.openssh.com/txt/release-7.5)
-        # UsePrivilegeSeparation sandbox
-        ########################################################################################################
-        # end settings from https://infosec.mozilla.org/guidelines/openssh#modern-openssh-67 as of 2019-01-01
-        ########################################################################################################
-        # don't let users set environment variables
-        PermitUserEnvironment no
-        # only use the newer, more secure protocol
-        Protocol 2
-        # disable port forwarding
-        AllowTcpForwarding no
-        AllowStreamLocalForwarding no
-        GatewayPorts no
-        PermitTunnel no
-        # don't allow login if the account has an empty password
-        PermitEmptyPasswords no
-        # ignore .rhosts and .shosts
-        IgnoreRhosts yes
-        # verify hostname matches IP
-        UseDNS yes
-        Compression no
-        TCPKeepAlive no
-        AllowAgentForwarding no
-        # don't allow .rhosts or /etc/hosts.equiv
-        HostbasedAuthentication no
-
-  - name: Secure ssh configuration part 2
-    become: true
-    become_method: doas
-    ansible.builtin.lineinfile:
+    ansible.builtin.copy:
+      backup: true
+      remote_src: true
+      src: ./config/sshd_config
       dest: /etc/ssh/sshd_config
-      regexp: "{{ item.regexp }}"
-      line: "{{ item.line }}"
-    loop:
-      - { regexp: '^AllowGroups', line: 'AllowGroups sshusers' }
-      - { regexp: '^ClientAliveCountMax', line: 'ClientAliveCountMax 0'}
-      - { regexp: '^ClientAliveInterval', line: 'ClientAliveInterval 300'}
-      - { regexp: '^ListenAddress', line: 'ListenAddress 0.0.0.0'}
-      - { regexp: '^LoginGraceTime', line: 'LoginGraceTime 30'}
-      - { regexp: '^MaxAuthTries', line: 'MaxAuthTries 2'}
-      - { regexp: '^MaxSessions', line: 'MaxSessions 2'}
-      - { regexp: '^MaxStartups', line: 'MaxStartups 2'}
-      - { regexp: '^PasswordAuthentication', line: 'PasswordAuthentication no'}
-      - { regexp: '^Port', line: 'Port 22'}
-      - { regexp: '^PermitRootLogin', line: 'PermitRootLogin no'}
-      - { regexp: '^X11Forwarding', line: 'X11Forwarding no'}
-      - { regexp: '^Subsystem', line: 'Subsystem sftp  /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO'}
+      force: true
 
   - name: Remove short diffie diffie-hellman
     become: true
@@ -205,57 +176,30 @@
       rkhunter --update
       rkhunter --propupd
 
-#  - name: Add timer to run clamav daily at 3 AM
-#    become: true
-#    become_method: doas
-#    ansible.builtin.systemd:
-#      name: clamav.timer
-#      enabled: true
-#      state: started
-#      minute: "0"
-#      hour: "3"
-#      job: "/usr/bin/clamscan -ri --exclude-dir=\"^/sys\" --no-summary /"
-
-  - name: Update and run first lynis audit
+/  - name: Update and run first lynis audit
     become: true
-    become_method: doas
-    ansible.builtin.shell: |
-      lynis update info
-      lynis audit system > /tmp/lynis-report
-
-  - name: Download bash_aliases
-    ansible.builtin.get_url:
-      url: https://raw.githubusercontent.com/moonrunes/dotfiles/main/.bash_aliases
-      dest: /home/nick/
-      mode: '0660'
-      force: true
-
-  - name: Download bashrc
-    ansible.builtin.get_url:
-      url: https://raw.githubusercontent.com/moonrunes/dotfiles/main/.bashrc
-      dest: /home/nick/
-      mode: '0660'
-      force: true
+    ansible.builtin.shell: lynis update info
 
   - name: Download tmux.conf
-    ansible.builtin.get_url:
-      url: https://raw.githubusercontent.com/moonrunes/dotfiles/main/.tmux.conf
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/.tmux.conf
       dest: /home/nick/
       mode: '0660'
       force: true
 
   - name: Download ssh client config
-    ansible.builtin.get_url:
-      url: https://raw.githubusercontent.com/moonrunes/dotfiles/main/config
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/config
       dest: /home/nick/.ssh
       mode: '0660'
       force: true
 
-  - name: Remove unnecessary programs via pacman
+  - name: Tailscale service setup
     become: true
     become_method: doas
-    community.general.pacman:
-      name:
-        - sudo
-      state: absent
-      force: true
+    ansible.builtin.service:
+      name: tailscaled
+      state: started
+      enabled: true
