@@ -220,7 +220,7 @@
     become_method: doas
     ansible.builtin.shell: |
       lynis update info
-      lynis audit system | ansi2html -l > /tmp/lynis-report.html
+      lynis audit system > /tmp/lynis-report
 
   - name: Download dotfiles
     ansible.builtin.get_url:
