@@ -211,6 +211,12 @@
       lynis update info
       lynis audit system | ansi2html -l > /tmp/lynis-report.html
 
+  - name: Download dotfiles
+    ansible.builtin.shell: |
+      wget -P /home/nick/ https://raw.githubusercontent.com/moonrunes/dotfiles/.bash_aliases
+      wget -P /home/nick/ https://raw.githubusercontent.com/moonrunes/dotfiles/.bashrc
+      wget -P /home/nick/ https://raw.githubusercontent.com/moonrunes/dotfiles/.tmux.conf
+
 - handlers:
   - name: Restart ssh service
     become: true
