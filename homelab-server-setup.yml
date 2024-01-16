@@ -7,10 +7,10 @@
       name: sshusers
 
   - name: create new user with password, add to groups
-      user:
-        name: nick
-        groups: "sshusers, wheel"
-        shell: /bin/bash
+    user:
+      name: nick
+      groups: "sshusers, wheel"
+      shell: /bin/bash
     
   - name: add authorized keys for new user
     authorized_key:
