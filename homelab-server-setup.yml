@@ -1,5 +1,5 @@
 - name: Build Arch Server
-  hosts: server
+  hosts: "server"
   tasks:
   - name: Create group for ssh users
     ansible.builtin.group:
