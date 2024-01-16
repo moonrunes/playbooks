@@ -200,9 +200,9 @@
       lynis update info
       lynis audit system | ansi2html -l > /tmp/lynis-report.html
 
-handlers:
-- name: Restart ssh service
-  become: true
-  service:
-    name: ssh
-    state: restarted
+- handlers:
+  - name: Restart ssh service
+    become: true
+    service:
+      name: ssh
+      state: restarted
