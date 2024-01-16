@@ -56,7 +56,7 @@
       line: permit persist nick
       owner: root
       group: root
-      mode: 660
+      mode: 640
 
   - name: Remove unnecessary programs via pacman
     become: true
