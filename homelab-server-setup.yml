@@ -175,7 +175,7 @@
       rkhunter --update
       rkhunter --propupd
 
-/  - name: Update and run first lynis audit
+  - name: Update and run first lynis audit
     become: true
     ansible.builtin.shell: lynis update info
 
