@@ -61,7 +61,7 @@
 
   - name: lock root account
     become: true
-      shell: passwd -l root
+    shell: passwd -l root
 
   - name: secure ssh configuration 
     become: true
