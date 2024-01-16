@@ -160,7 +160,7 @@
     become_method: doas
     ansible.builtin.service:
       name: auditd
-      state: restarted
+      state: started
       enabled: true
 
   - name: Configure rkhunter
