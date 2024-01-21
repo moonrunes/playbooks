@@ -1,0 +1,171 @@
+---
+- name: Requirements
+  hosts:
+  tasks:
+  - name: Create group for ssh users
+    tags:
+    - init
+    - user
+    become: true
+    ansible.builtin.group:
+      name: sshusers
+
+  - name: Add nick to groups
+    tags:
+    - init
+    - user
+    become: true
+    ansible.builtin.user:
+      name: nick
+      groups: "sshusers, wheel"
+      shell: /bin/bash
+
+  - name: Add authorized keys file
+    tags:
+    - init
+    - ssh
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/authorized_keys
+      dest: /home/nick/.ssh/
+      mode: '0660'
+      force: true
+
+  - name: Update and upgrade
+    tags:
+    - update
+    become: true
+    community.general.pacman:
+      update_cache: true
+      upgrade: true
+
+  - name: Install programs via pacman
+    tags:
+    - init
+    - packages
+    become: true
+    community.general.pacman:
+      name:
+        - btop
+        - firewalld
+        - git
+        - nano
+        - neofetch
+        - ntp
+        - opendoas
+        - parted
+        - ranger
+        - rng-tools
+        - rsync
+        - tailscale
+        - tmux
+       state: present
+
+  - name: Set doas permission for nick
+    tags:
+    - init
+    - user
+    become: true
+    ansible.builtin.lineinfile:
+      create: true
+      path: /etc/doas.conf
+      line: permit persist nick
+      owner: root
+      group: root
+      mode: '0440'
+
+  - name: Download bash_aliases
+    tags:
+    - init
+    - bash
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/.bash_aliases
+      dest: /home/nick/
+      mode: '0660'
+      force: true
+
+  - name: Download bashrc
+    tags:
+    - init
+    - bash
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/.bashrc
+      dest: /home/nick/
+      mode: '0660'
+      force: true
+
+  - name: Lock root account
+    tags:
+    - init
+    - user
+    become: true
+    become_method: doas
+    ansible.builtin.user:
+      name: root
+      password_lock: true
+
+  - name: Remove unnecessary programs via pacman
+    tags:
+    - init
+    - packages
+    become: true
+    become_method: doas
+    community.general.pacman:
+      name:
+        - sudo
+      state: absent
+      force: true
+
+  - name: Secure SSH configuration
+    - init
+    - ssh
+    become: true
+    become_method: doas
+    ansible.builtin.copy:
+      backup: true
+      remote_src: true
+      src: ./config/sshd_config
+      dest: /etc/ssh/sshd_config
+      force: true
+
+  - name: Remove short diffie diffie-hellman
+    tags:
+    - init
+    - ssh
+    become: true
+    become_method: doas
+    ansible.builtin.shell: awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.tmp && mv /etc/ssh/moduli.tmp /etc/ssh/moduli
+
+    - name: Download tmux.conf
+    tags:
+    - init
+    - tmux
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/.tmux.conf
+      dest: /home/nick/
+      mode: '0660'
+      force: true
+
+  - name: Download ssh client config
+    tags:
+    - init
+    - ssh
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/config
+      dest: /home/nick/.ssh
+      mode: '0660'
+      force: true
+
+  - name: Tailscale service setup
+    - init
+    - tailscale
+    become: true
+    become_method: doas
+    ansible.builtin.service:
+      name: tailscaled
+      state: started
+      enabled: true
