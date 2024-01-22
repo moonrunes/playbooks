@@ -1,0 +1,4 @@
+---
+# file: roles/games/meta/main.yml
+dependencies:
+- { role: flatpak }

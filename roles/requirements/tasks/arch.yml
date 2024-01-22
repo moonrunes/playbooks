@@ -1,0 +1,63 @@
+  - name: Update and upgrade
+    tags:
+    - update
+    become: true
+    community.general.pacman:
+      update_cache: true
+      upgrade: true
+
+  - name: Install programs via pacman
+    tags:
+    - init
+    - packages
+    become: true
+    community.general.pacman:
+      name:
+        - btop
+        - dua-cli
+        - firewalld
+        - nano
+        - neofetch
+        - ntp
+        - opendoas
+        - parted
+        - ranger
+        - rng-tools
+        - rsync
+        - tmux
+      state: present
+
+  - name: Set doas permission for nick
+    tags:
+    - init
+    - user
+    become: true
+    ansible.builtin.lineinfile:
+      create: true
+      path: /etc/doas.conf
+      line: permit persist nick
+      owner: root
+      group: root
+      mode: '0440'
+
+  - name: Lock root account
+    tags:
+    - init
+    - user
+    become: true
+    become_method: doas
+    ansible.builtin.user:
+      name: root
+      password_lock: true
+
+  - name: Remove unnecessary programs via pacman
+    tags:
+    - init
+    - packages
+    become: true
+    become_method: doas
+    community.general.pacman:
+      name:
+        - sudo
+      state: absent
+      force: true
