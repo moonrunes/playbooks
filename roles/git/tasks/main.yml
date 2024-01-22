@@ -20,3 +20,8 @@
       name: user.email
       scope: global
       value: "nickeigel@gmail.com"
+
+  - git_config:
+      name: core.editor 
+      scope: global
+      value: "nano -w"
