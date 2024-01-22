@@ -16,3 +16,4 @@ Ansible Playbooks to deploy servers and clients including configurations and Doc
 - Ansible Pull configs?
 - Automated updates
 - Add roles
+- Add FreeBSD/OpenWRT/Ubuntu/Debian/Windows
