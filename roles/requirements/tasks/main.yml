@@ -1,6 +1,6 @@
 ---
-- name: Requirements
-  hosts:
+- name: Linux/Unix requirements
+  hosts: all
   tasks:
   - name: Create group for ssh users
     tags:
@@ -31,6 +31,73 @@
       mode: '0660'
       force: true
 
+  - name: Download bash_aliases
+    tags:
+    - init
+    - bash
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/.bash_aliases
+      dest: /home/nick/
+      mode: '0660'
+      force: true
+
+  - name: Download bashrc
+    tags:
+    - init
+    - bash
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/.bashrc
+      dest: /home/nick/
+      mode: '0660'
+      force: true
+
+  - name: Secure SSH configuration
+    - init
+    - ssh
+    become: true
+    ansible.builtin.copy:
+      backup: true
+      remote_src: true
+      src: /home/nick/Scrimps/config/sshd_config
+      dest: /etc/ssh/sshd_config
+      force: true
+
+  - name: Remove short diffie diffie-hellman
+    tags:
+    - init
+    - ssh
+    become: true
+    ansible.builtin.shell: awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.tmp && mv /etc/ssh/moduli.tmp /etc/ssh/moduli
+    notify: Restart sshd
+
+    - name: Download tmux.conf
+    tags:
+    - init
+    - tmux
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/.tmux.conf
+      dest: /home/nick/
+      mode: '0660'
+      force: true
+
+  - name: Download ssh client config
+    tags:
+    - init
+    - ssh
+    ansible.builtin.copy:
+      remote_src: true
+      src: /home/nick/Scrimps/config/config
+      dest: /home/nick/.ssh
+      mode: '0660'
+      force: true
+
+#Arch specific
+-name: Arch requirements
+  hosts: arch
+  tasks:
   - name: Update and upgrade
     tags:
     - update
@@ -48,7 +115,6 @@
       name:
         - btop
         - firewalld
-        - git
         - nano
         - neofetch
         - ntp
@@ -74,28 +140,6 @@
       group: root
       mode: '0440'
 
-  - name: Download bash_aliases
-    tags:
-    - init
-    - bash
-    ansible.builtin.copy:
-      remote_src: true
-      src: /home/nick/Scrimps/config/.bash_aliases
-      dest: /home/nick/
-      mode: '0660'
-      force: true
-
-  - name: Download bashrc
-    tags:
-    - init
-    - bash
-    ansible.builtin.copy:
-      remote_src: true
-      src: /home/nick/Scrimps/config/.bashrc
-      dest: /home/nick/
-      mode: '0660'
-      force: true
-
   - name: Lock root account
     tags:
     - init
@@ -116,48 +160,6 @@
       name:
         - sudo
       state: absent
-      force: true
-
-  - name: Secure SSH configuration
-    - init
-    - ssh
-    become: true
-    become_method: doas
-    ansible.builtin.copy:
-      backup: true
-      remote_src: true
-      src: ./config/sshd_config
-      dest: /etc/ssh/sshd_config
-      force: true
-
-  - name: Remove short diffie diffie-hellman
-    tags:
-    - init
-    - ssh
-    become: true
-    become_method: doas
-    ansible.builtin.shell: awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.tmp && mv /etc/ssh/moduli.tmp /etc/ssh/moduli
-
-    - name: Download tmux.conf
-    tags:
-    - init
-    - tmux
-    ansible.builtin.copy:
-      remote_src: true
-      src: /home/nick/Scrimps/config/.tmux.conf
-      dest: /home/nick/
-      mode: '0660'
-      force: true
-
-  - name: Download ssh client config
-    tags:
-    - init
-    - ssh
-    ansible.builtin.copy:
-      remote_src: true
-      src: /home/nick/Scrimps/config/config
-      dest: /home/nick/.ssh
-      mode: '0660'
       force: true
 
   - name: Tailscale service setup

@@ -1,0 +1,34 @@
+-name: Arch flatpak install and config
+  hosts: archclient
+  tasks:
+  - name: Install flatpak via pacman
+    tags:
+    - packages
+    become: true
+    become_method: doas
+    community.general.pacman:
+      name:
+        - flatpak
+      state: present
+
+  - name: Add the flathub flatpak repository remote to the user installation
+    flatpak_remote:
+      name: flathub
+      state: present
+      flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+      method: user
+
+  - name: Install standard flatpaks
+    flatpak:
+      name:  
+        - ark
+        - firefox
+        - chromium
+        - gwenview
+        - kcalc
+        - kwrite
+        - obsidian
+        - okular
+        - vlc
+      state: present
+

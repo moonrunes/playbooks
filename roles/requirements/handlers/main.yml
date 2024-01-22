@@ -1,0 +1,10 @@
+- name: Restart sshd
+  tags:
+  - restart
+  - ssh
+  become: true
+  become_method: doas
+  ansible.builtin.service:
+    name: sshd
+    state: restarted
+    enabled: true

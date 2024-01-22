@@ -1,0 +1,22 @@
+-name: Arch git install and config
+  hosts: arch
+  tasks:
+  - name: Install git via pacman
+    tags:
+    - packages
+    become: true
+    become_method: doas
+    community.general.pacman:
+      name:
+        - git
+      state: present
+
+  - git_config:
+      name: user.name
+      scope: global
+      value: "Nick Eigel"
+
+  - git_config:
+      name: user.email
+      scope: global
+      value: "nickeigel@gmail.com"
