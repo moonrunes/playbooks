@@ -1,3 +1,14 @@
+  - name: Load OS-specific vars
+    include_vars: "{{ lookup('first_found', params) }}"
+    vars:
+      params:
+        files:
+          - '{{ansible_distribution}}.yml'
+          - '{{ansible_os_family}}.yml'
+          - main.yml
+        paths:
+          - 'vars'
+
   - name: Create group for ssh users
     tags:
     - init
@@ -90,3 +101,6 @@
       dest: /home/nick/.ssh
       mode: '0660'
       force: true
+
+  - include_tasks: arch.yml
+    when: ansible_os_family == 'Archlinux'
