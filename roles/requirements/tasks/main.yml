@@ -114,6 +114,7 @@
     community.general.pacman:
       name:
         - btop
+        - dua-cli
         - firewalld
         - nano
         - neofetch
