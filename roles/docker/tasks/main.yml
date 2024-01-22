@@ -32,8 +32,17 @@
     become: true
     become_method: doas
     ansible.builtin.service:
-      name: 
-      - docker
-      - containerd
+      name: docker
+      state: started
+      enabled: true
+
+  - name: Start docker service
+    tags:
+    - start
+    - docker
+    become: true
+    become_method: doas
+    ansible.builtin.service:
+      name: containerd
       state: started
       enabled: true

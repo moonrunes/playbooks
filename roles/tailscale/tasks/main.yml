@@ -1,4 +1,5 @@
   - name: Tailscale service setup
+    tags:
     - init
     - tailscale
     become: true

@@ -1,4 +1,5 @@
   - name: Download auditd best practice rules
+    tags:
     - init
     - audit
     become: true

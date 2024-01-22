@@ -1,7 +1,7 @@
 ---
-- name: Requirements-Playbook
+- name: Requirements playbook
   hosts: all
   remote_user: nick
 # vars_files: ./group_vars/variables.yml
-    roles:
-      - requirements
+  roles:
+    - requirements

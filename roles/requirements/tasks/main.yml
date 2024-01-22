@@ -1,7 +1,3 @@
----
-- name: Linux/Unix requirements
-  hosts: all
-  tasks:
   - name: Create group for ssh users
     tags:
     - init
@@ -26,7 +22,7 @@
     - ssh
     ansible.builtin.copy:
       remote_src: true
-      src: /home/nick/Scrimps/config/authorized_keys
+      src: ./config/authorized_keys
       dest: /home/nick/.ssh/
       mode: '0660'
       force: true
@@ -37,7 +33,7 @@
     - bash
     ansible.builtin.copy:
       remote_src: true
-      src: /home/nick/Scrimps/config/.bash_aliases
+      src: ./config/.bash_aliases
       dest: /home/nick/
       mode: '0660'
       force: true
@@ -48,19 +44,20 @@
     - bash
     ansible.builtin.copy:
       remote_src: true
-      src: /home/nick/Scrimps/config/.bashrc
+      src: ./config/.bashrc
       dest: /home/nick/
       mode: '0660'
       force: true
 
   - name: Secure SSH configuration
+    tags:
     - init
     - ssh
     become: true
     ansible.builtin.copy:
       backup: true
       remote_src: true
-      src: /home/nick/Scrimps/config/sshd_config
+      src: ./config/sshd_config
       dest: /etc/ssh/sshd_config
       force: true
 
@@ -78,7 +75,7 @@
     - tmux
     ansible.builtin.copy:
       remote_src: true
-      src: /home/nick/Scrimps/config/.tmux.conf
+      src: ./config/.tmux.conf
       dest: /home/nick/
       mode: '0660'
       force: true
@@ -89,7 +86,7 @@
     - ssh
     ansible.builtin.copy:
       remote_src: true
-      src: /home/nick/Scrimps/config/config
+      src: ./config/config
       dest: /home/nick/.ssh
       mode: '0660'
       force: true
