@@ -1,0 +1,17 @@
+  - name: Configure git global username
+    git_config:
+      name: user.name
+      scope: global
+      value: "Nick Eigel"
+
+  - name: Configure git global email
+    git_config:
+      name: user.email
+      scope: global
+      value: "nickeigel@gmail.com"
+
+  - name: Configure git global editor
+    git_config:
+      name: core.editor 
+      scope: global
+      value: "nano -w"

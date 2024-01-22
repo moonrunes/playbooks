@@ -11,27 +11,7 @@
         - flatpak
       state: present
 
-  - name: Add the flathub flatpak repository remote to the user installation
-    community.general.flatpak_remote:
-      name: flathub
-      state: present
-      flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
-      method: user
-
-  - name: Install standard flatpaks
-    community.general.flatpak:
-      name:  
-        - ark
-        - firefox
-        - chromium
-        - flatseal
-        - gwenview
-        - kcalc
-        - kwrite
-        - md.obsidian.Obsidian
-        - okular
-        - vlc
-      state: present
+# Go to roles/flatpak/tasks/main.yml
 
   - name: Uninstall packages from pacman
     community.general.pacman:

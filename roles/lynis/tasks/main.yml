@@ -1,0 +1,7 @@
+  - name: Update lynis
+    tags:
+    - update
+    - lynis
+    become: true
+    become_method: doas
+    ansible.builtin.shell: lynis update info

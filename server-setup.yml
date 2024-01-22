@@ -1,0 +1,15 @@
+---
+  - name: Server setup playbook
+    hosts: server
+    remote_user: nick
+    gather_facts: yes
+#   vars_files: ./group_vars/variables.yml
+    roles:
+      - auditd
+      - clamav
+      - docker
+      - firewalld
+      - git
+      - lynis
+      - rkhunter
+      - tailscale

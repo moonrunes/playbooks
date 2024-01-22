@@ -1,0 +1,9 @@
+  - name: Install audit via pacman
+    tags:
+    - init
+    - packages
+    become: true
+    community.general.pacman:
+      name:
+        - audit
+      state: present

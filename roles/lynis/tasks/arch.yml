@@ -1,0 +1,9 @@
+  - name: Install lynis via pacman
+    tags:
+    - init
+    - packages
+    become: true
+    community.general.pacman:
+      name:
+        - lynis
+      state: present
