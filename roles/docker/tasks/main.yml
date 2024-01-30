@@ -10,8 +10,8 @@
       paths:
         - 'vars'
 
-#- include_tasks: Archlinux.yml
-# when: ansible_os_family == 'Archlinux'
+- include_tasks: Archlinux.yml
+  when: ansible_os_family == 'Archlinux'
 
 - include_tasks: Debian.yml
   when: ansible_os_family == 'Debian'
