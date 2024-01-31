@@ -25,6 +25,7 @@
         - rng-tools
         - rsync
         - tmux
+        - vim
       state: present
 
   - name: Set doas permission for nick
