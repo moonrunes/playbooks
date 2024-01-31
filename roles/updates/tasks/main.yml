@@ -26,3 +26,9 @@
 
   - include_tasks: Windows.yml
     when: ansible_os_family == 'Windows'
+
+  - name: Update flatpaks
+    shell:
+      cmd: flatpak update --noninteractive
+    become: true
+    become_method: doas
