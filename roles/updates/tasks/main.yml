@@ -28,7 +28,8 @@
     when: ansible_os_family == 'Windows'
 
   - name: Update flatpaks
-    shell:
-      cmd: flatpak update --noninteractive
+    ansible.builtin.command: flatpak update --noninteractive
+    register: flatpak_update_output
+    changed_when: "'app/' in flatpak_update_output.stdout"
     become: true
     become_method: doas
