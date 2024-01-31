@@ -32,10 +32,10 @@
     - init
     - ssh
     ansible.builtin.copy:
-      remote_src: true
+      remote_src: false
       src: ./config/authorized_keys
       dest: /home/nick/.ssh/
-      mode: '0660'
+      mode: '0600'
       force: true
 
   - name: Download bash_aliases
@@ -43,7 +43,7 @@
     - init
     - bash
     ansible.builtin.copy:
-      remote_src: true
+      remote_src: false
       src: ./config/.bash_aliases
       dest: /home/nick/
       mode: '0660'
@@ -54,7 +54,7 @@
     - init
     - bash
     ansible.builtin.copy:
-      remote_src: true
+      remote_src: false
       src: ./config/.bashrc
       dest: /home/nick/
       mode: '0660'
@@ -67,7 +67,7 @@
     become: true
     ansible.builtin.copy:
       backup: true
-      remote_src: true
+      remote_src: false
       src: ./config/sshd_config
       dest: /etc/ssh/sshd_config
       force: true
@@ -85,7 +85,7 @@
     - init
     - tmux
     ansible.builtin.copy:
-      remote_src: true
+      remote_src: false
       src: ./config/.tmux.conf
       dest: /home/nick/
       mode: '0660'
@@ -96,11 +96,11 @@
     - init
     - ssh
     ansible.builtin.copy:
-      remote_src: true
+      remote_src: false
       src: ./config/config
       dest: /home/nick/.ssh
       mode: '0660'
       force: true
 
-  - include_tasks: arch.yml
+  - include_tasks: Archlinux.yml
     when: ansible_os_family == 'Archlinux'
