@@ -1,0 +1,36 @@
+  - name: Install OctoPrint requirements via pacman
+    tags:
+    - init
+    - packages
+    become: true
+    community.general.pacman:
+      name:
+        - make
+        - cmake
+        - ffmpeg
+        - gcc
+        - haproxy
+        - libbsd
+        - libevent
+        - libffi
+        - libjpeg-turbo
+        - libyaml
+        - openssh
+        - python
+        - python-pip
+        - python-setuptools
+        - python-virtualenv
+        - python-yaml
+        - rsync
+        - v4l-utils
+      state: present
+
+  - name: Add nick to video and uucp groups
+    tags:
+    - init
+    - user
+    become: true
+    ansible.builtin.user:
+      name: nick
+      groups: "video, uucp"
+      shell: /bin/bash

@@ -1,17 +1,12 @@
--name: Arch flatpak install and config
-  hosts: archclient
-  tasks:
   - name: Install flatpak via pacman
     tags:
     - packages
     become: true
     become_method: doas
     community.general.pacman:
-      name:
-        - flatpak
-      state: present
-
-# Go to roles/flatpak/tasks/main.yml
+     name:
+       - flatpak
+     state: present
 
   - name: Uninstall packages from pacman
     community.general.pacman:

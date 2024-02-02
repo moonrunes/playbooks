@@ -1,6 +1,3 @@
--name: Arch git install and config
-  hosts: arch
-  tasks:
   - name: Install git via pacman
     tags:
     - packages

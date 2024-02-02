@@ -28,4 +28,4 @@
     git_config:
       name: core.editor 
       scope: global
-      value: "nano -w"
+      value: "vim"
