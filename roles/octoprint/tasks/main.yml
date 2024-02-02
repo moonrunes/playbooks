@@ -6,18 +6,16 @@
           - '{{ansible_distribution}}.yml'
           - '{{ansible_os_family}}.yml'
           - main.yml
-        paths:
-          - 'vars'
   
   - include_tasks: Archlinux.yml
     when: ansible_os_family == 'Archlinux'
 
   - name: Install Python virtual environment
     ansible.builtin.shell: |
-      python -m venv /home/nick/OctoPrint
-      /home/nick/OctoPrint/bin/pip install --upgrade pip
-      /home/nick/OctoPrint/bin/pip install wheel
-      /home/nick/OctoPrint/bin/pip install OctoPrint
+      python -m venv /home/"{{ user_name }}"/OctoPrint
+      /home/"{{ user_name }}"/OctoPrint/bin/pip install --upgrade pip
+      /home/"{{ user_name }}"/OctoPrint/bin/pip install wheel
+      /home/"{{ user_name }}"/OctoPrint/bin/pip install OctoPrint
 
   - name: Stop haproxy service
     become: true

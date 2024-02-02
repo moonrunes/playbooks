@@ -46,7 +46,7 @@ docker_apt_filename: "docker"
 
 # A list of users who will be added to the docker group.
 docker_users:
-  - nick
+  - "{{ user_name }}"
 
 # Docker daemon options as a dict
 docker_daemon_options: {}

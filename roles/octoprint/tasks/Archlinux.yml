@@ -25,12 +25,12 @@
         - v4l-utils
       state: present
 
-  - name: Add nick to video and uucp groups
+  - name: Add user to video and uucp groups
     tags:
     - init
     - user
     become: true
     ansible.builtin.user:
-      name: nick
+      name: "{{ user_name }}"
       groups: "video, uucp"
       shell: /bin/bash

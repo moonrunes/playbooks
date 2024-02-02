@@ -6,8 +6,6 @@
           - '{{ansible_distribution}}.yml'
           - '{{ansible_os_family}}.yml'
           - main.yml
-        paths:
-          - 'vars'
 
   - name: Create group for ssh users
     tags:
@@ -17,13 +15,13 @@
     ansible.builtin.group:
       name: sshusers
 
-  - name: Add nick to groups
+  - name: Add user to groups
     tags:
     - init
     - user
     become: true
     ansible.builtin.user:
-      name: nick
+      name: "{{ user_name }}"
       groups: "sshusers, wheel"
       shell: /bin/bash
 
@@ -34,7 +32,7 @@
     ansible.builtin.copy:
       remote_src: false
       src: ./config/authorized_keys
-      dest: /home/nick/.ssh/
+      dest: /home/"{{ user_name }}"/.ssh/
       mode: '0600'
       force: true
 
@@ -45,7 +43,7 @@
     ansible.builtin.copy:
       remote_src: false
       src: ./config/.bash_aliases
-      dest: /home/nick/
+      dest: /home/"{{ user_name }}"/
       mode: '0660'
       force: true
 
@@ -56,7 +54,7 @@
     ansible.builtin.copy:
       remote_src: false
       src: ./config/.bashrc
-      dest: /home/nick/
+      dest: /home/"{{ user_name }}"/
       mode: '0660'
       force: true
 
@@ -87,7 +85,7 @@
     ansible.builtin.copy:
       remote_src: false
       src: ./config/.tmux.conf
-      dest: /home/nick/
+      dest: /home/"{{ user_name }}"/
       mode: '0660'
       force: true
 
@@ -98,7 +96,7 @@
     ansible.builtin.copy:
       remote_src: false
       src: ./config/config
-      dest: /home/nick/.ssh
+      dest: /home/"{{ user_name }}"/.ssh
       mode: '0660'
       force: true
 

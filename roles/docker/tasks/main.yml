@@ -106,14 +106,14 @@
 #   ansible.builtin.group:
 #     name: docker
 
-# - name: Add nick to docker group
+# - name: Add user to docker group
 #   tags:
 #   - init
 #   - user
 #   become: true
 #   become_method: doas
 #   ansible.builtin.user:
-#     name: nick
+#     name: "{{ user_name }}"
 #     groups: "docker"
 
 # - name: Activate the changes to groups
