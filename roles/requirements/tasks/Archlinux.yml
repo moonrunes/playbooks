@@ -21,6 +21,7 @@
         - ntp
         - opendoas
         - parted
+        - python
         - ranger
         - rng-tools
         - rsync
