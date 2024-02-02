@@ -21,10 +21,12 @@
         - ntp
         - opendoas
         - parted
+        - python
         - ranger
         - rng-tools
         - rsync
         - tmux
+        - vim
       state: present
 
   - name: Set doas permission for nick
@@ -35,7 +37,7 @@
     ansible.builtin.lineinfile:
       create: true
       path: /etc/doas.conf
-      line: permit persist nick
+      line: permit persist :wheel
       owner: root
       group: root
       mode: '0440'

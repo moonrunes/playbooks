@@ -1,7 +1,14 @@
----
-- name: Linux/Unix requirements
-  hosts: all
-  tasks:
+  - name: Load OS-specific vars
+    include_vars: "{{ lookup('first_found', params) }}"
+    vars:
+      params:
+        files:
+          - '{{ansible_distribution}}.yml'
+          - '{{ansible_os_family}}.yml'
+          - main.yml
+        paths:
+          - 'vars'
+
   - name: Create group for ssh users
     tags:
     - init
@@ -25,10 +32,10 @@
     - init
     - ssh
     ansible.builtin.copy:
-      remote_src: true
-      src: /home/nick/Scrimps/config/authorized_keys
+      remote_src: false
+      src: ./config/authorized_keys
       dest: /home/nick/.ssh/
-      mode: '0660'
+      mode: '0600'
       force: true
 
   - name: Download bash_aliases
@@ -36,8 +43,8 @@
     - init
     - bash
     ansible.builtin.copy:
-      remote_src: true
-      src: /home/nick/Scrimps/config/.bash_aliases
+      remote_src: false
+      src: ./config/.bash_aliases
       dest: /home/nick/
       mode: '0660'
       force: true
@@ -47,20 +54,21 @@
     - init
     - bash
     ansible.builtin.copy:
-      remote_src: true
-      src: /home/nick/Scrimps/config/.bashrc
+      remote_src: false
+      src: ./config/.bashrc
       dest: /home/nick/
       mode: '0660'
       force: true
 
   - name: Secure SSH configuration
+    tags:
     - init
     - ssh
     become: true
     ansible.builtin.copy:
       backup: true
-      remote_src: true
-      src: /home/nick/Scrimps/config/sshd_config
+      remote_src: false
+      src: ./config/sshd_config
       dest: /etc/ssh/sshd_config
       force: true
 
@@ -77,8 +85,8 @@
     - init
     - tmux
     ansible.builtin.copy:
-      remote_src: true
-      src: /home/nick/Scrimps/config/.tmux.conf
+      remote_src: false
+      src: ./config/.tmux.conf
       dest: /home/nick/
       mode: '0660'
       force: true
@@ -88,8 +96,11 @@
     - init
     - ssh
     ansible.builtin.copy:
-      remote_src: true
-      src: /home/nick/Scrimps/config/config
+      remote_src: false
+      src: ./config/config
       dest: /home/nick/.ssh
       mode: '0660'
       force: true
+
+  - include_tasks: Archlinux.yml
+    when: ansible_os_family == 'Archlinux'
