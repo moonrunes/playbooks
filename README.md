@@ -12,8 +12,6 @@ Ansible Playbooks to deploy servers and clients including configurations and Doc
 6. Run the role playbook
 
 ## Things to add
-- Docker/compose configs
 - Ansible Pull configs?
 - Automated updates
-- Add roles
-- Add FreeBSD/OpenWRT/Ubuntu/Debian/Windows
+- Add FreeBSD/OpenWRT/Debian/Windows
