@@ -1,10 +1,10 @@
-  - name: Restart firewalld
+  - name: Restart cups
     tags:
     - restart
-    - firewalld
+    - cups
     become: true
     become_method: doas
     ansible.builtin.service:
-      name: firewalld
+      name: cups
       state: restarted
       enabled: true

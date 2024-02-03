@@ -6,6 +6,15 @@
           - '{{ansible_distribution}}.yml'
           - '{{ansible_os_family}}.yml'
           - main.yml
-
+  
   - include_tasks: Archlinux.yml
     when: ansible_os_family == 'Archlinux'
+
+  - name: Install game flatpaks
+    community.general.flatpak:
+      name:  
+        - com.valvesoftware.Steam
+        - net.davidotek.pupgui2
+        - org.leocad.LeoCAD
+        - org.prismlauncher.PrismLauncher
+      state: present

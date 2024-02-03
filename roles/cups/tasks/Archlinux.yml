@@ -1,9 +1,9 @@
-  - name: Install programs via pacman
+  - name: Install audit via pacman
     tags:
     - init
     - packages
     become: true
     community.general.pacman:
       name:
-        - flatpak
+        - cups
       state: present

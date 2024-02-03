@@ -6,7 +6,7 @@
           - '{{ansible_distribution}}.yml'
           - '{{ansible_os_family}}.yml'
           - main.yml
-
+  
   - include_tasks: Archlinux.yml
     when: ansible_os_family == 'Archlinux'
 
@@ -20,14 +20,22 @@
   - name: Install standard flatpaks
     community.general.flatpak:
       name:  
-        - ark
-        - firefox
-        - chromium
-        - flatseal
-        - gwenview
-        - kcalc
-        - kwrite
+        - com.bitwarden.desktop
+        - com.github.iwalton3.jellyfin-media-player
+        - com.github.tchx84.flatseal
+        - com.nextcloud.desktopclient.nextcloud
+        - com.prusa3d.PrusaSlicer
+        - io.gitlab.librewolf-community
         - md.obsidian.Obsidian
-        - okular
-        - vlc
+        - org.chromium.Chromium
+        - org.chromium.Chromium.Codecs
+        - org.kde.ark
+        - org.kde.filelight
+        - org.kde.gwenview
+        - org.kde.kcalc
+        - org.kde.kdevelop
+        - org.kde.kwrite
+        - org.kde.okular
+        - org.onlyoffice.desktopeditors
+        - org.videolan.VLC
       state: present
