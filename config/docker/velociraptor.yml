@@ -6,7 +6,7 @@ services:
     #  context: ./
     #  dockerfile: Dockerfile
     volumes:
-      - ./velociraptor:/velociraptor/:rw
+      - /srv/velociraptor:/velociraptor/:rw
     <<: *env
     environment:
       - VELOX_USER=${VELOX_USER}
