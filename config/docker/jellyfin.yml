@@ -1,0 +1,22 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    group_add:
+      - "989"
+      - "985"
+    ports: 
+      - 8096:8096
+    volumes:
+      - /srv/jellyfin/config:/config
+      - /srv/jellyfin/cache:/cache
+      - /mnt/storage:/media
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    <<: *env
+    environment:
+      - ROC_ENABLE_PRE_VEGA=1
+    deploy:
+      resources:
+        limits:
+          memory: 1G
