@@ -30,6 +30,7 @@
     - init
     - user
     become: true
+    become_method: doas
     ansible.builtin.user:
       name: "{{ user_name }}"
       groups: "video, uucp"

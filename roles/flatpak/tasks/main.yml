@@ -17,7 +17,7 @@
       flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
       method: user
 
-  - name: Install standard flatpaks
+  - name: Install standard client flatpaks
     community.general.flatpak:
       name:  
         - com.bitwarden.desktop

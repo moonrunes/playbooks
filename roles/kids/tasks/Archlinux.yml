@@ -1,8 +1,9 @@
-  - name: Install programs via pacman
+  - name: Install flatpak via pacman
     tags:
     - init
     - packages
     become: true
+    become_method: doas
     community.general.pacman:
       name:
         - flatpak

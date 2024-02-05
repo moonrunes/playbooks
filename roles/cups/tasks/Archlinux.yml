@@ -1,8 +1,9 @@
-  - name: Install audit via pacman
+  - name: Install cups via pacman
     tags:
     - init
     - packages
     become: true
+    become_method: doas
     community.general.pacman:
       name:
         - cups

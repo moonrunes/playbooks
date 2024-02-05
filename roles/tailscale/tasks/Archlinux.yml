@@ -3,6 +3,7 @@
     - init
     - packages
     become: true
+    become_method: doas
     community.general.pacman:
       name:
         - tailscale

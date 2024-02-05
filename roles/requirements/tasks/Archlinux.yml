@@ -15,7 +15,6 @@
       name:
         - btop
         - dua-cli
-        - firewalld
         - nano
         - neofetch
         - ntp

@@ -2,6 +2,7 @@
     tags:
     - update
     become: true
+    become_method: doas
     community.general.pacman:
       update_cache: true
       upgrade: true

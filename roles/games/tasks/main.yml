@@ -10,7 +10,7 @@
   - include_tasks: Archlinux.yml
     when: ansible_os_family == 'Archlinux'
 
-  - name: Install game flatpaks
+  - name: Install gaming flatpaks
     community.general.flatpak:
       name:  
         - com.valvesoftware.Steam
