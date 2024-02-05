@@ -1,0 +1,18 @@
+services:
+  cups:
+    image: anujdatar/cups
+    container_name: cups
+    ports:
+      - "631:631"
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+    <<: *env
+    environment:
+      - CUPSADMIN=${CUPS_ADMIN}
+      - CUPSPASSWORD=${CUPS_PASSWORD}
+    volumes:
+      - /srv/cups/:/etc/cups
+    deploy:
+      resources:
+        limits:
+          memory: 1G
