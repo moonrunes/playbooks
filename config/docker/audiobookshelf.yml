@@ -8,4 +8,8 @@ services:
       - /mnt/storage/podcasts/:/podcasts
       - /srv/audiobookshelf/metadata/:/metadata
       - /srv/audiobookshelf/config:/config
-    <<: *env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
+    restart: unless-stopped

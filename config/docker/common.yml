@@ -1,17 +1,14 @@
-x-env: &env
-  environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Chicago
-  restart: unless-stopped
-
 services:
   watchtower:
     image: containrrr/watchtower
     container_name: watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    <<: *env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
+    restart: unless-stopped
     deploy:
       resources:
         limits:

@@ -13,9 +13,12 @@ services:
       - /mnt/storage:/media
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
-    <<: *env
     environment:
       - ROC_ENABLE_PRE_VEGA=1
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
+    restart: unless-stopped
     deploy:
       resources:
         limits:

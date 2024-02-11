@@ -6,10 +6,13 @@ services:
       - 631:631
     devices:
       - /dev/bus/usb:/dev/bus/usb
-    <<: *env
     environment:
       - CUPSADMIN=${CUPS_ADMIN}
       - CUPSPASSWORD=${CUPS_PASSWORD}
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
+    restart: unless-stopped
     volumes:
       - /srv/cups/:/etc/cups
     deploy:

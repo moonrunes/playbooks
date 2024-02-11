@@ -9,9 +9,12 @@ services:
       - /dev/video0:/dev/video0
     volumes:
      - /srv/octoprint:/octoprint
-    <<: *env
     environment:
       - ENABLE_MJPG_STREAMER=true
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
+    restart: unless-stopped
   
   ####
   # uncomment if you wish to edit the configuration files of octoprint
@@ -26,9 +29,10 @@ services:
   #    - octoprint
   #  restart: unless-stopped
   #  environment:
-  #    - PUID=0
-  #    - PGID=0
+  #    - PUID=1000
+  #    - PGID=1000
   #    - TZ=America/Chicago
+  #  restart: unless-stopped
   #  volumes:
   #    - octoprint:/octoprint
 

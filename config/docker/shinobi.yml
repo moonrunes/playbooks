@@ -11,7 +11,11 @@ services:
       - /srv/shinobi/database/:/var/lib/mysql:rw
       - /srv/shinobi/videos/:/home/Shinobi/videos:rw
       - /srv/shinobi/plugins/:/home/Shinobi/plugins:rw
-    <<: *env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
+    restart: unless-stopped
     deploy:
       resources:
         limits:
