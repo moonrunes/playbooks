@@ -1,0 +1,23 @@
+services:
+  nut-upsd:
+    image: instantlinux/nut-upsd
+    container_name: nut-upsd
+    environment:
+      # Driver found with this tool https://networkupstools.org/stable-hcl.html
+      - DRIVER=usbhid-ups
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
+    devices:
+      # Only pinning to the bus as the device number can change
+      - /dev/bus/usb/001:/dev/bus/usb/001
+    ports:
+      - "3493:3493"
+    secrets:
+      - nut-upsd-password
+    restart: unless-stopped
+
+secrets:
+  nut-upsd-password:
+    # Place this where you like, but you may want to read up on securing password files: https://docs.docker.com/compose/use-secrets/
+    file: ./nut/nut-upsd-password
