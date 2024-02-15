@@ -24,9 +24,9 @@
         - ranger
         - rng-tools
         - rsync
-        - stow
         - tmux
         - vim
+        - yadm
       state: present
 
   - name: Set doas permission for nick
