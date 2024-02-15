@@ -40,20 +40,13 @@
       mode: '0600'
       force: true
 
-  - name: Download dotfiles
+  - name: YADM clone dotfiles
     tags:
     - init
     - bash
-    ansible.builtin.git:
-      clone: true
-      dest: /home/"{{ user_name }}"/
-      repo: https://github.com/moonrunes/.dotfiles.git
-
-  - name: Invoke stow
-    tags:
-    - init
     ansible.builtin.command:
-      
+      chdir: /home/"{{ user_name }}"/
+      cmd: yadm clone https://github.com/moonrunes/.dotfiles.git
 
   - name: Secure SSH configuration
     tags:
