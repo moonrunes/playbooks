@@ -1,3 +1,3 @@
-user_name: USERNAME_HERE # Username for the created user
-git_name: "GIT_USERNAME_HERE" # Username for git
-git_email: "GIT_EMAIL_HERE" # Email address for git user
+user_name: nick # Username for the created user
+git_name: "Nick Eigel" # Username for git
+git_email: "nickeigel@gmail.com" # Email address for git user

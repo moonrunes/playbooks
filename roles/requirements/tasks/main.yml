@@ -6,6 +6,8 @@
           - '{{ansible_distribution}}.yml'
           - '{{ansible_os_family}}.yml'
           - main.yml
+        paths:
+          - 'vars'
 
   - include_tasks: Archlinux.yml
     when: ansible_os_family == 'Archlinux'
@@ -36,7 +38,7 @@
     - ssh
     ansible.builtin.copy:
       src: ./config/authorized_keys
-      dest: /home/"{{ user_name }}"/.ssh/
+      dest: /home/{{ user_name }}/.ssh/
       mode: '0600'
       force: true
 
@@ -45,7 +47,7 @@
     - init
     - bash
     ansible.builtin.command:
-      chdir: /home/"{{ user_name }}"/
+      chdir: /home/{{ user_name }}/
       cmd: yadm clone https://github.com/moonrunes/.dotfiles.git
 
   - name: Secure SSH configuration
@@ -75,6 +77,6 @@
     - ssh
     ansible.builtin.copy:
       src: ./config/config
-      dest: /home/"{{ user_name }}"/.ssh
+      dest: /home/{{ user_name }}/.ssh
       mode: '0660'
       force: true

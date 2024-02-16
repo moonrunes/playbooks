@@ -3,7 +3,7 @@
     hosts: server
     gather_facts: yes
     remote_user: "{{ user_name }}"
-    vars_files: ./group_vars/variables.yml
+    vars_files: ./group_vars/vars.yml
     roles:
       - auditd
       - clamav
