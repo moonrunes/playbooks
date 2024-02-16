@@ -1,5 +1,7 @@
+.kdev4
 group_vars/vars.yml
 config/authorized_keys
 config/config
 config/docker/.env
 hosts.yml
+playbooks.kdev4
