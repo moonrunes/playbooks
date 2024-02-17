@@ -1,10 +1,24 @@
-  - name: Install cups via pacman
-    tags:
+---
+- name: Install cups via pacman
+  tags:
     - init
     - packages
-    become: true
-    become_method: doas
-    community.general.pacman:
-      name:
-        - cups
-      state: present
+  hosts: client
+  become: true
+  become_method: doas
+  community.general.pacman:
+    name:
+      - cups
+    state: present
+
+- name: Install cups via docker
+  tags:
+    - init
+    - packages
+  hosts: server
+  become: true
+  become_method: doas
+  community.general.pacman:
+    name:
+      - cups
+    state: present

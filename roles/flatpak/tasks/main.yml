@@ -23,19 +23,14 @@
     community.general.flatpak:
       name:  
         - com.bitwarden.desktop
-        - com.github.iwalton3.jellyfin-media-player
         - com.github.tchx84.flatseal
-        - com.nextcloud.desktopclient.nextcloud
-        - com.prusa3d.PrusaSlicer
         - io.gitlab.librewolf-community
-        - md.obsidian.Obsidian
         - org.chromium.Chromium
         - org.chromium.Chromium.Codecs
         - org.kde.ark
         - org.kde.filelight
         - org.kde.gwenview
         - org.kde.kcalc
-        - org.kde.kdevelop
         - org.kde.kwrite
         - org.kde.okular
         - org.onlyoffice.desktopeditors

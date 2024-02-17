@@ -3,5 +3,8 @@ group_vars/vars.yml
 config/authorized_keys
 config/config
 config/docker/.env
+client-setup.yml
 hosts.yml
 playbooks.kdev4
+requirements.yml
+server-setup.yml
