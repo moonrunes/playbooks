@@ -9,6 +9,17 @@
     dest: ~/docker/cups.yml
     force: true
 
+- name: Add docker-compose env file
+  tags: 
+  - server
+  - docker
+  - cups
+  ansible.builtin.copy:
+    src: ./config/docker/.env
+    dest: ~/docker/.env
+    force: true
+    mode: 0600
+
 - name: Start cups docker-compose
   tags:
   - server
@@ -16,3 +27,12 @@
   - cups
   ansible.builtin.shell: docker-compose -f docker/cups.yml up -d
   
+- name: Remove docker-compose .env file
+  tags:
+  - cleanup
+  - server
+  - docker
+  - cups
+  ansible.builtin.file:
+    path: ./docker/.env
+    state: absent
