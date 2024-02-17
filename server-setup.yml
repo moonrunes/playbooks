@@ -5,11 +5,8 @@
     remote_user: "{{ user_name }}"
     vars_files: ./group_vars/vars.yml
     roles:
-      - auditd
-      - clamav
+      - updates
       - docker
       - firewalld
       - git
-      - lynis
-      - rkhunter
       - tailscale
