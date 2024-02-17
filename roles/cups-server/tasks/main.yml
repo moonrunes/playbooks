@@ -6,7 +6,7 @@
   - cups
   ansible.builtin.copy:
     src: ./config/docker/cups.yml
-    dest: ~/docker/common.yml
+    dest: ~/docker/cups.yml
     force: true
 
 - name: Start cups docker-compose
@@ -14,6 +14,5 @@
   - server
   - docker
   - cups
-  community.docker.docker_compose:
-    files: ~/docker/cups.yml
-    state: present
+  ansible.builtin.shell: docker-compose -f docker/cups.yml up -d
+  
