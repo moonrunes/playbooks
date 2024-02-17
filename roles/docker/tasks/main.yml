@@ -66,6 +66,4 @@
   tags:
   - server
   - docker
-  community.docker.docker_compose:
-    files: ~/docker/common.yml
-    state: present
+  ansible.builtin.shell: docker-compose -f docker/common.yml up -d
