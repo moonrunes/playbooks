@@ -1,12 +1,11 @@
-  - name: Install docker via pacman
+  - name: Install cups via pacman
     tags:
     - init
-    - docker
+    - cups
     become: true
     become_method: doas
     community.general.pacman:
       name:
-        - docker
-        - docker-compose
+        - cups
       state: present
-    notify: Restart docker
+    notify: Restart cups

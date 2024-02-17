@@ -1,5 +1,5 @@
 ---
-- name: Load OS-specific vars.
+- name: Load OS-specific vars
   include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
@@ -13,40 +13,56 @@
 - include_tasks: Archlinux.yml
   when: ansible_os_family == 'Archlinux'
 
-  - name: Create group for docker users
-    tags:
-    - init
-    - user
-    become: true
-    become_method: doas
-    ansible.builtin.group:
-      name: docker
+- name: Create group for docker users
+  tags:
+  - init
+  - user
+  become: true
+  become_method: doas
+  ansible.builtin.group:
+    name: docker
 
-  - name: Add user to docker group
-    tags:
-    - init
-    - user
-    become: true
-    become_method: doas
-    ansible.builtin.user:
-      name: "{{ user_name }}"
-      groups: "docker"
+- name: Add user to docker group
+  tags:
+  - init
+  - user
+  become: true
+  become_method: doas
+  ansible.builtin.user:
+    name: "{{ user_name }}"
+    groups: "docker"
 
-  - name: Activate the changes to groups
-    tags:
-    - init
-    - user
-    become: true
-    become_method: doas
-    ansible.builtin.shell: newgrp docker
+- name: Activate the changes to groups
+  tags:
+  - init
+  - user
+  become: true
+  become_method: doas
+  ansible.builtin.shell: newgrp docker
 
-  - name: Start docker service
-    tags:
-    - start
-    - docker
-    become: true
-    become_method: doas
-    ansible.builtin.service:
-      name: docker
-      state: started
-      enabled: true
+- name: Start docker service
+  tags:
+  - start
+  - docker
+  become: true
+  become_method: doas
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add watchtower docker-compose file
+  tags: 
+  - docker
+  ansible.builtin.copy:
+    src: ./config/docker/common.yml
+    dest: ~/docker/common.yml
+    force: true
+
+- name: Start watchtower docker-compose
+  tags:
+  - server
+  - docker
+  community.docker.docker_compose:
+    files: ~/docker/common.yml
+    state: present

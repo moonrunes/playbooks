@@ -1,0 +1,19 @@
+---
+- name: Add cups docker-compose file
+  tags: 
+  - server
+  - docker
+  - cups
+  ansible.builtin.copy:
+    src: ./config/docker/cups.yml
+    dest: ~/docker/common.yml
+    force: true
+
+- name: Start cups docker-compose
+  tags:
+  - server
+  - docker
+  - cups
+  community.docker.docker_compose:
+    files: ~/docker/cups.yml
+    state: present
