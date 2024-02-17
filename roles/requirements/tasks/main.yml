@@ -19,6 +19,7 @@
     become: true
     become_method: doas
     ansible.builtin.group:
+      append: true
       name: sshusers
 
   - name: Add user to groups
