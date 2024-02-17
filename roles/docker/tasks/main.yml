@@ -36,8 +36,6 @@
   tags:
   - init
   - user
-  become: true
-  become_method: doas
   ansible.builtin.shell: newgrp docker
 
 - name: Start docker service
