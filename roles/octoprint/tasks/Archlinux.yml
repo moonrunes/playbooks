@@ -24,14 +24,3 @@
         - rsync
         - v4l-utils
       state: present
-
-  - name: Add user to video and uucp groups
-    tags:
-    - init
-    - user
-    become: true
-    become_method: doas
-    ansible.builtin.user:
-      name: "{{ user_name }}"
-      groups: "video, uucp"
-      shell: /bin/bash
