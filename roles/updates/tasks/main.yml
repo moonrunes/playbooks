@@ -6,6 +6,8 @@
           - '{{ansible_distribution}}.yml'
           - '{{ansible_os_family}}.yml'
           - main.yml
+        paths:
+          - 'vars'
 
   - include_tasks: Archlinux.yml
     when: ansible_os_family == 'Archlinux'
@@ -31,3 +33,36 @@
     changed_when: "'app/' in flatpak_update_output.stdout"
     become: true
     become_method: doas
+
+  - name: Create group for ssh users
+    tags:
+    - user
+    become: true
+    become_method: doas
+    ansible.builtin.group:
+      name: sshusers
+
+  - name: Add user to groups
+    tags:
+    - user
+    become: true
+    become_method: doas
+    ansible.builtin.user:
+      name: "{{ user_name }}"
+      groups: "sshusers, wheel"
+      shell: /bin/bash
+
+  - name: Add authorized keys file
+    tags:
+    - ssh
+    ansible.builtin.copy:
+      src: ./config/authorized_keys
+      dest: /home/{{ user_name }}/.ssh/
+      mode: '0600'
+      force: true
+
+  - name: YADM fetch dotfile updates
+    tags:
+    - bash
+    ansible.builtin.command:
+      cmd: yadm pull
