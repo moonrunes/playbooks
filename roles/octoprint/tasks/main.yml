@@ -12,6 +12,17 @@
   - include_tasks: Archlinux.yml
     when: ansible_os_family == 'Archlinux'
 
+  - name: Add user to video and uucp groups
+    tags:
+    - init
+    - user
+    become: true
+    become_method: doas
+    ansible.builtin.user:
+      name: "{{ user_name }}"
+      append: true
+      groups: "video, uucp"
+
   - name: Install Python virtual environment
     ansible.builtin.shell: |
       python -m venv /home/"{{ user_name }}"/OctoPrint
