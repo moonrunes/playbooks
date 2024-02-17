@@ -50,13 +50,17 @@
     state: started
     enabled: true
 
+- name: Make docker directory
+  file: 
+    path: ~/docker/
+    state: directory
+
 - name: Add watchtower docker-compose file
   tags: 
   - docker
   ansible.builtin.copy:
-    src: ./config/docker/common.yml
+    content: ./config/docker/common.yml
     dest: ~/docker/common.yml
-    force: true
 
 - name: Start watchtower docker-compose
   tags:
