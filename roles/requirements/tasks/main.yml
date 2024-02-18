@@ -81,3 +81,14 @@
       dest: /home/{{ user_name }}/.ssh
       mode: '0660'
       force: true
+
+  - name: Ensure sshd is running
+    tags:
+    - start
+    - sshd
+    become: true
+    become_method: doas
+    ansible.builtin.service:
+      name: sshd
+      state: started
+      enabled: true

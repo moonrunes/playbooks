@@ -23,6 +23,7 @@
     community.general.flatpak:
       name:  
         - com.bitwarden.desktop
+        - com.github.iwalton3.jellyfin-media-player
         - com.github.tchx84.flatseal
         - io.gitlab.librewolf-community
         - org.chromium.Chromium
@@ -36,3 +37,13 @@
         - org.onlyoffice.desktopeditors
         - org.videolan.VLC
       state: present
+
+  - name: Install standard client flatpaks
+    community.general.flatpak:
+      name:
+        - com.nextcloud.desktopclient.nextcloud
+        - com.prusa3d.PrusaSlicer
+        - md.obsidian.Obsidian
+        - org.kde.kdevelop
+      state: present
+    when: ( 'dev' in inventory_file )

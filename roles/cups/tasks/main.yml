@@ -13,5 +13,16 @@
 - ansible.builtin.include_tasks: Archlinux.yml
   when: ansible_os_family == 'Archlinux'
 
+- name: Start cups service
+  tags:
+  - start
+  - cups
+  become: true
+  become_method: doas
+  ansible.builtin.service:
+    name: cups
+    state: started
+    enabled: true
+
 - ansible.builtin.include_tasks: cups-server.yml
-    hosts: cups-server
+  when: ( 'cups-server' in inventory_file )

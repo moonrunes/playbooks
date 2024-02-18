@@ -8,4 +8,4 @@
       name:
         - cups
       state: present
-    notify: Restart cups
+     

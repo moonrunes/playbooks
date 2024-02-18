@@ -35,6 +35,7 @@
     changed_when: "'app/' in flatpak_update_output.stdout"
     become: true
     become_method: doas
+    when: ( 'client' in inventory_file )
 
   - name: Create group for ssh users
     tags:

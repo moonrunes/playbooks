@@ -1,5 +1,17 @@
-- name: Add cups docker-compose file
-  tags: 
-  - server
-  - cups
-  ansible.builtin.shell: lpadmin -p BROTHER-HL-2040 -E -v "direct usb://Brother/HL-2040%20series?serial=G6J156153" -m foomatic-db-compressed-ppds:0/ppd/foomatic-ppd/Brother-HL-2040-hl1250.ppd
+  - name: Install BROTHER-HL-2040 driver
+    tags:
+    - init
+    - cups
+    become: true
+    become_method: doas
+    community.general.pacman:
+       name: brother-hl2040
+       state: present
+       executable: yay
+       extra_args: --builddir /var/cache/yay
+
+  - name: Add cups printer
+    tags: 
+    - server
+    - cups
+    ansible.builtin.shell: lpadmin -p BROTHER-HL-2040 -E -v "usb://Brother/HL-2040%20series?serial=G6J156153" -m HL2040.ppd

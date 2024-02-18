@@ -12,7 +12,7 @@
   - include_tasks: Archlinux.yml
     when: ansible_os_family == 'Archlinux'
 
-  - name: Ensure firewalld is running.
+  - name: Ensure firewalld is running
     tags:
     - start
     - firewall

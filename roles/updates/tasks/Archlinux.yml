@@ -36,6 +36,7 @@
     - init
     - user
     become: true
+    become_method: doas
     ansible.builtin.lineinfile:
       create: true
       path: /etc/doas.conf
