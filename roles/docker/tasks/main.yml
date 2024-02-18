@@ -53,7 +53,7 @@
   tags: 
   - docker
   ansible.builtin.copy:
-    content: ./config/docker/common.yml
+    src: ./config/docker/common.yml
     dest: ~/docker/common.yml
 
 - name: Start watchtower docker-compose
