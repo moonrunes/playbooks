@@ -10,6 +10,8 @@
       paths:
         - 'vars'
 
-- include_tasks: Archlinux.yml
-  hosts: client
+- ansible.builtin.include_tasks: Archlinux.yml
   when: ansible_os_family == 'Archlinux'
+
+- ansible.builtin.include_tasks: cups-server.yml
+    hosts: cups-server
