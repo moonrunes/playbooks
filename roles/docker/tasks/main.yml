@@ -33,12 +33,6 @@
     append: true
     groups: "docker"
 
-- name: Activate the changes to groups
-  tags:
-  - init
-  - user
-  ansible.builtin.shell: newgrp docker
-
 - name: Start docker service
   tags:
   - start
