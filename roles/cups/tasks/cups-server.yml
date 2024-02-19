@@ -16,7 +16,7 @@
     become: true
     become_method: doas
     ansible.builtin.copy:
-      src: config/Brother-HL-2040-hl1250.ppd
+      src: ./config/Brother-HL-2040-hl1250.ppd
       dst: /etc/cups/ppd/
 
   - name: Add cups printer
