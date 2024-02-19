@@ -25,3 +25,18 @@
     - cups
     - server
     ansible.builtin.shell: lpadmin -p BROTHER-HL-2040 -E -v "usb://Brother/HL-2040%20series?serial=G6J156153" -m Brother-HL-2040-hl1250.ppd
+
+  - name: Add firewall rule to allow cups traffic
+    tags:
+    - init
+    - cups
+    - server
+    - firewall
+    become: true
+    become_method: doas
+    ansible.posix.firewalld:
+      port: 631/tcp
+      zone: public
+      permanent: yes
+      immediate: yes
+      state: enabled
