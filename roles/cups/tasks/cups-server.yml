@@ -1,17 +1,27 @@
-  - name: Install BROTHER-HL-2040 driver
+  - name: Install cups-browsed
     tags:
     - init
     - cups
     become: true
     become_method: doas
     community.general.pacman:
-       name: brother-hl2040
+       name: cups-browsed
        state: present
-       executable: yay
-       extra_args: --builddir /var/cache/yay
+
+  -name: Copy BROTHER-HL-2040 driver
+    tags:
+    - init
+    - cups
+    - server
+    become: true
+    become_method: doas
+    ansible.builtin.copy:
+      src: config/Brother-HL-2040-hl1250.ppd
+      dst: /etc/cups/ppd/
 
   - name: Add cups printer
     tags: 
-    - server
+    - init
     - cups
-    ansible.builtin.shell: lpadmin -p BROTHER-HL-2040 -E -v "usb://Brother/HL-2040%20series?serial=G6J156153" -m HL2040.ppd
+    - server
+    ansible.builtin.shell: lpadmin -p BROTHER-HL-2040 -E -v "usb://Brother/HL-2040%20series?serial=G6J156153" -m Brother-HL-2040-hl1250.ppd
